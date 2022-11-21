@@ -1,64 +1,41 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { FlatList, SafeAreaView, StyleSheet, Text, View } from "react-native";
-import { api } from "./app/services/api";
-import { Result } from "./app/services/ChargersList.types";
-import Card from "./app/components/Card";
+import * as Location from "expo-location";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
+import ChargerListScreen from "./app/screens/ChargerListScreen";
 
 export default function App() {
-  const [fetchError, setFetchError] = useState("");
-  const [postError, setPostError] = useState("");
-  const [chargerChosen, setChargerChosen] = useState<null | number>(null);
-  const [chargers, setChargers] = useState<Result[]>(null);
+  const [location, setLocation] = useState<Location.LocationObject>(null);
+  const [locationError, setLocationError] = useState(null);
 
   useEffect(() => {
     (async () => {
-      const [chargers, error] = await api.fetchListOfChargers({
-        latitude: 41.8781,
-        longitude: -87.6298,
-      });
-      if (error) {
-        setFetchError(error.message);
-      } else {
-        setChargers(chargers);
+      try {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== "granted") {
+          setLocationError("Permission to access location was denied");
+          return;
+        }
+
+        let location = await Location.getCurrentPositionAsync({});
+        setLocation(location);
+      } catch (e) {
+        setLocationError(e.message);
       }
     })();
   }, []);
 
-  const handlePress = useCallback(async (chargerId: number) => {
-    setChargerChosen(chargerId);
-    const error = await api.updateChargerBeingUsed(chargerId);
-    if (error) {
-      setPostError(error.message);
-      setTimeout(() => {
-        error.message = "";
-        setChargerChosen(null);
-      }, 2000);
-    }
-  }, []);
-
-  if (chargers && chargers?.length > 0) {
+  if (locationError) {
     return (
-      <SafeAreaView>
-        <FlatList
-          data={chargers}
-          renderItem={({ item }) => (
-            <Card
-              item={item}
-              onPress={() => handlePress(item.ID)}
-              isChosen={chargerChosen === item.ID}
-              postError={postError}
-            />
-          )}
-        />
-      </SafeAreaView>
+      <View style={styles.container}>
+        <Text>
+          Unable to locate you at this time. Go to settings and enable Location
+          Services and try again
+        </Text>
+      </View>
     );
   }
-  return (
-    <View style={styles.container}>
-      <Text>No chargers nearby</Text>
-      {fetchError && <Text>{fetchError}</Text>}
-    </View>
-  );
+
+  return <ChargerListScreen location={location} />;
 }
 
 const styles = StyleSheet.create({
