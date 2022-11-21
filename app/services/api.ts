@@ -1,4 +1,4 @@
-import { ChargersList } from "./ChargersList.types";
+import { Result } from "./ChargersList.types";
 
 const defaultConfig = {
   url: "https://api.openchargemap.io/v3",
@@ -13,7 +13,7 @@ export class Api {
   public async getListOfChargers(location: {
     latitude: number;
     longitude: number;
-  }): Promise<[ChargersList | null, Error | null]> {
+  }): Promise<[Result[] | null, Error | null]> {
     const boundingBox = {
       lat1: location.latitude * 1.001,
       long1: location.longitude * 1.001,
@@ -28,7 +28,7 @@ export class Api {
     } catch (e) {
       return [null, Error(e)];
     }
-    return [resp as ChargersList, null];
+    return [resp as Result[], null];
   }
 }
 export const api = new Api();

@@ -1,7 +1,3 @@
-export interface ChargersList {
-  Results: Result[];
-}
-
 export interface Result {
   DataProvider: DataProvider;
   OperatorInfo: OperatorInfo;
