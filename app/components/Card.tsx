@@ -3,12 +3,14 @@ import { Text, Pressable } from "react-native";
 import { Result } from "../services/ChargersList.types";
 
 const Card = ({
-  item,
+  address,
+  availableChargers,
   onPress,
   isChosen,
   postError,
 }: {
-  item: Result;
+  address: string;
+  availableChargers: number;
   onPress: () => void;
   isChosen: boolean;
   postError: string;
@@ -25,16 +27,8 @@ const Card = ({
       }}
       onPress={onPress}
     >
-      <Text>
-        Address: {item.AddressInfo.AddressLine1} {item.AddressInfo.Town}{" "}
-        {item.AddressInfo.StateOrProvince}
-      </Text>
-      <Text>
-        Available Chargers:{" "}
-        {item.Connections.reduce((acc, curr) => {
-          return acc + curr.Quantity;
-        }, 0)}
-      </Text>
+      <Text>Address: {address}</Text>
+      <Text>Available Chargers: {availableChargers}</Text>
       {isChosen && postError === "" && <Text>In Use</Text>}
       {isChosen && postError && <Text>{postError}</Text>}
     </Pressable>

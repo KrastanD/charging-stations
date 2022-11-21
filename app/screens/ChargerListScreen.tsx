@@ -45,7 +45,10 @@ function ChargerListScreen({ location }) {
           data={chargers}
           renderItem={({ item }) => (
             <Card
-              item={item}
+              address={`${item.AddressInfo.AddressLine1} ${item.AddressInfo.Town} ${item.AddressInfo.StateOrProvince}`}
+              availableChargers={item.Connections.reduce((acc, curr) => {
+                return acc + curr.Quantity;
+              }, 0)}
               onPress={() => handlePress(item.ID)}
               isChosen={chargerChosen === item.ID}
               postError={postError}

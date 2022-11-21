@@ -36,7 +36,7 @@ export interface ResultAddressInfo {
   ID: number;
   description?: string;
   AddressLine1: string;
-  AddressLine2: null;
+  AddressLine2: null | string;
   Town: string;
   StateOrProvince: string;
   Postcode: string;
@@ -44,8 +44,8 @@ export interface ResultAddressInfo {
   Country: Country;
   Latitude: number;
   Longitude: number;
-  ContactTelephone1: null;
-  ContactTelephone2: null;
+  ContactTelephone1: null | string;
+  ContactTelephone2: null | string;
   ContactEmail: null | string;
   AccessComments: null | string;
   RelatedURL: null | string;
@@ -121,7 +121,7 @@ export interface DataProvider {
   IsOpenDataLicensed: boolean | string;
   IsApprovedImport: boolean | string;
   License: string;
-  DateLastImported: null | string;
+  DateLastImported: null | Date;
   ID: number;
   description?: string;
   Title?: string;
@@ -130,7 +130,7 @@ export interface DataProvider {
 export interface DataProviderStatusType {
   IsProviderEnabled: boolean;
   ID: number[] | number;
-  description: string[] | string;
+  description?: string[] | string;
 }
 
 export interface MediaItem {
@@ -157,8 +157,8 @@ export interface User {
 export interface OperatorInfo {
   WebsiteURL: string;
   Comments: null;
-  PhonePrimaryContact: null;
-  PhoneSecondaryContact: null;
+  PhonePrimaryContact: string;
+  PhoneSecondaryContact: string;
   IsPrivateIndividual: boolean;
   AddressInfo: OperatorInfoAddressInfo | null;
   BookingURL: null | string;
